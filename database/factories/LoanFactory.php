@@ -12,6 +12,6 @@ class LoanFactory extends Factory
     {
         $loanedAt = now()->subDays(fake()->numberBetween(0, 10));
 
-        return ['book_id' => Book::factory(), 'member_id' => Member::factory(), 'loaned_at' => $loanedAt, 'due_at' => $loanedAt->copy()->addDays(7), 'status' => 'borrowed', 'fine_amount' => 0];
+        return ['book_id' => Book::factory(), 'member_id' => Member::factory(), 'user_id' => User::factory(), 'loan_date' => $loanedAt, 'due_date' => $loanedAt->copy()->addDays(7), 'status' => 'dipinjam'];
     }
 }

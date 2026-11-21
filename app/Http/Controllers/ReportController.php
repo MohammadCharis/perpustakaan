@@ -12,7 +12,7 @@ class ReportController extends Controller
 {
     public function dashboard(): View
     {
-        return view('dashboard', ['stats' => ['books' => Book::count(), 'members' => Member::where('active', true)->count(), 'loans' => Loan::whereNull('returned_at')->count(), 'fines' => Fine::where('status', 'unpaid')->sum('amount')], 'recentLoans' => Loan::with(['book', 'member'])->latest()->limit(8)->get()]);
+        return view('dashboard', ['stats' => ['books' => Book::count(), 'members' => Member::where('is_active', true)->count(), 'loans' => Loan::whereNull('returned_at')->count(), 'fines' => Fine::where('status', 'unpaid')->sum('amount')], 'recentLoans' => Loan::with(['book', 'member'])->latest()->limit(8)->get()]);
     }
 
     public function index(): View

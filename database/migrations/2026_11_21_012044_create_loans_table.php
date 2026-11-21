@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('returned_at')->nullable();
             $table->string('status')->default('dipinjam');
             $table->timestamps();
-            $table->index(['status', 'due_at']);
+            $table->index(['status', 'due_date']);
         });
     }
 

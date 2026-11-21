@@ -13,6 +13,6 @@ class StoreMemberRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['member_code' => ['required', 'string', 'max:30', 'unique:members,member_code,'.$this->route('member')?->id], 'name' => ['required', 'string', 'max:255'], 'email' => ['nullable', 'email', 'unique:members,email,'.$this->route('member')?->id], 'phone' => ['nullable', 'string', 'max:30'], 'address' => ['nullable', 'string'], 'joined_at' => ['required', 'date'], 'active' => ['boolean']];
+        return ['member_code' => ['required', 'string', 'max:30', 'unique:members,member_code,'.$this->route('member')?->id], 'name' => ['required', 'string', 'max:255'], 'phone' => ['nullable', 'string', 'max:30'], 'address' => ['nullable', 'string'], 'joined_at' => ['required', 'date'], 'active' => ['boolean']];
     }
 }
