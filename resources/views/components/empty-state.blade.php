@@ -1,0 +1,2 @@
+@props(['title' => 'Belum ada data', 'description' => null])
+<div class="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 px-6 py-12 text-center dark:border-slate-700"><div class="mb-3 rounded-full bg-indigo-50 p-3 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300"><x-heroicon name="inbox" /></div><h3 class="font-semibold text-slate-900 dark:text-white">{{ $title }}</h3>@if($description)<p class="mt-1 max-w-sm text-sm text-slate-500">{{ $description }}</p>@endif<div class="mt-4">{{ $slot }}</div></div>

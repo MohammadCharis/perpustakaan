@@ -1,30 +1,4 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
-
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-        </div>
-    </body>
-</html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ dark: localStorage.getItem('theme') === 'dark' }" x-init="$watch('dark', value => { localStorage.setItem('theme', value ? 'dark' : 'light'); document.documentElement.classList.toggle('dark', value) }); document.documentElement.classList.toggle('dark', dark)">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ config('app.name', 'Perpustakaan') }}</title><link rel="icon" type="image/png" href="{{ asset('logo.png') }}">@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
+<body class="flex min-h-screen items-center justify-center bg-slate-50 p-4 dark:bg-slate-950"><div class="grid w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-900 lg:grid-cols-2"><div class="hidden bg-indigo-600 p-12 text-white lg:block"><img src="{{ asset('logo.png') }}" alt="Logo Perpustakaan" class="h-16 w-16 rounded-2xl bg-white object-contain p-1"><h1 class="mt-24 text-4xl font-bold tracking-tight">Kelola perpustakaan dengan lebih baik.</h1><p class="mt-4 max-w-sm text-indigo-100">Satu ruang kerja untuk koleksi, anggota, dan peminjaman yang lebih teratur.</p></div><div class="p-6 sm:p-12">{{ $slot }}</div></div></body></html>
