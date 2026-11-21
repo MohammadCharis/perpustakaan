@@ -22,10 +22,10 @@ class LibraryFeatureTest extends TestCase
         $this->assertDatabaseHas('books', ['title' => 'Buku Uji']);
     }
 
-    public function test_staff_cannot_manage_members(): void
+    public function test_petugas_can_manage_members(): void
     {
-        $staff = User::factory()->create(['role' => 'staff']);
-        $this->actingAs($staff)->get(route('members.index'))->assertForbidden();
+        $petugas = User::factory()->create(['role' => 'petugas']);
+        $this->actingAs($petugas)->get(route('members.index'))->assertOk();
     }
 
     public function test_admin_can_borrow_and_return_book(): void

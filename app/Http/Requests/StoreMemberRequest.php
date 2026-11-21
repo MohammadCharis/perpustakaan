@@ -8,11 +8,11 @@ class StoreMemberRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        return $this->user() !== null;
     }
 
     public function rules(): array
     {
-        return ['member_code' => ['required', 'string', 'max:30', 'unique:members,member_code,'.$this->route('member')?->id], 'name' => ['required', 'string', 'max:255'], 'phone' => ['nullable', 'string', 'max:30'], 'address' => ['nullable', 'string'], 'joined_at' => ['required', 'date'], 'active' => ['boolean']];
+        return ['member_code' => ['required', 'string', 'max:30', 'unique:members,member_code,'.$this->route('member')?->id], 'name' => ['required', 'string', 'max:255'], 'phone' => ['nullable', 'string', 'max:30'], 'address' => ['nullable', 'string'], 'is_active' => ['boolean']];
     }
 }
