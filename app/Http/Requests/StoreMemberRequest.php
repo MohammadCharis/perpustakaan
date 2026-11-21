@@ -2,28 +2,17 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMemberRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()?->isAdmin() ?? false;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return ['member_code' => ['required', 'string', 'max:30', 'unique:members,member_code,'.$this->route('member')?->id], 'name' => ['required', 'string', 'max:255'], 'email' => ['nullable', 'email', 'unique:members,email,'.$this->route('member')?->id], 'phone' => ['nullable', 'string', 'max:30'], 'address' => ['nullable', 'string'], 'joined_at' => ['required', 'date'], 'active' => ['boolean']];
     }
 }

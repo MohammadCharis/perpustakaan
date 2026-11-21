@@ -2,64 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLoanRequest;
+use App\LoanService;
+use App\Models\Book;
 use App\Models\Loan;
-use Illuminate\Http\Request;
+use App\Models\Member;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class LoanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        return view('loans.index', ['loans' => Loan::with(['book', 'member', 'fine'])->latest()->paginate(15)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('loans.create', ['books' => Book::where('stock', '>', 0)->orderBy('title')->get(), 'members' => Member::where('is_active', true)->orderBy('name')->get()]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreLoanRequest $request, LoanService $service): RedirectResponse
     {
-        //
+        $service->loan(Book::findOrFail($request->integer('book_id')), Member::findOrFail($request->integer('member_id')), $request->user()->id);
+
+        return to_route('loans.index')->with('success', 'Peminjaman berhasil dicatat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Loan $loan)
+    public function return(Loan $loan, LoanService $service): RedirectResponse
     {
-        //
-    }
+        $service->return($loan);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Loan $loan)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Loan $loan)
-    {
-        //
+        return to_route('loans.index')->with('success', 'Buku berhasil dikembalikan.');
     }
 }

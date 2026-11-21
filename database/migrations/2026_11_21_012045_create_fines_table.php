@@ -1,8 +1,26 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-return new class extends Migration {
-    public function up(): void { Schema::create('fines', function (Blueprint $table): void { $table->id(); $table->foreignId('loan_id')->constrained()->cascadeOnDelete(); $table->unsignedInteger('amount'); $table->string('status')->default('unpaid'); $table->date('paid_at')->nullable(); $table->timestamps(); }); }
-    public function down(): void { Schema::dropIfExists('fines'); }
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('fines', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('loan_id')->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('days_late');
+            $table->unsignedInteger('amount');
+            $table->string('status')->default('belum_dibayar');
+            $table->date('paid_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('fines');
+    }
 };

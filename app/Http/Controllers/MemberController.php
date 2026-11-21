@@ -2,64 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMemberRequest;
 use App\Models\Member;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        return view('members.index', ['members' => Member::withCount('loans')->latest()->paginate(15)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('members.form');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreMemberRequest $request): RedirectResponse
     {
-        //
+        Member::create($request->validated());
+
+        return to_route('members.index')->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Member $member)
+    public function edit(Member $member): View
     {
-        //
+        return view('members.form', compact('member'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Member $member)
+    public function update(StoreMemberRequest $request, Member $member): RedirectResponse
     {
-        //
+        $member->update($request->validated());
+
+        return to_route('members.index')->with('success', 'Anggota berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Member $member)
+    public function destroy(Member $member): RedirectResponse
     {
-        //
-    }
+        if ($member->loans()->whereNull('returned_at')->exists()) {
+            return back()->with('error', 'Anggota masih memiliki peminjaman aktif.');
+        } $member->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Member $member)
-    {
-        //
+        return to_route('members.index')->with('success', 'Anggota berhasil dihapus.');
     }
 }

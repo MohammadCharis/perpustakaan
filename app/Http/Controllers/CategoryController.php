@@ -2,64 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        return view('categories.index', ['categories' => Category::withCount('books')->latest()->paginate(15)]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('categories.form');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request): RedirectResponse
     {
-        //
+        Category::create($request->validated());
+
+        return to_route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
+    public function edit(Category $category): View
     {
-        //
+        return view('categories.form', compact('category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
+    public function update(StoreCategoryRequest $request, Category $category): RedirectResponse
     {
-        //
+        $category->update($request->validated());
+
+        return to_route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
+    public function destroy(Category $category): RedirectResponse
     {
-        //
-    }
+        if ($category->books()->exists()) {
+            return back()->with('error', 'Kategori masih digunakan buku.');
+        } $category->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Category $category)
-    {
-        //
+        return to_route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
