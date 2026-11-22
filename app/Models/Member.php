@@ -9,11 +9,11 @@ class Member extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['member_code', 'name', 'phone', 'address', 'is_active'];
+    protected $fillable = ['member_code', 'name', 'email', 'phone', 'address', 'joined_at', 'is_active'];
 
     protected function casts(): array
     {
-        return ['is_active' => 'boolean'];
+        return ['is_active' => 'boolean', 'joined_at' => 'date'];
     }
 
     public function loans()

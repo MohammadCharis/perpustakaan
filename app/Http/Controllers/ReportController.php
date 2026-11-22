@@ -61,9 +61,33 @@ class ReportController extends Controller
         ]);
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        return view('reports.index', ['loans' => Loan::with(['book', 'member'])->latest()->paginate(20)]);
+        $startDate = $request->filled('start_date')
+            ? Carbon::parse($request->string('start_date')->toString())->startOfDay()
+            : null;
+        $endDate = $request->filled('end_date')
+            ? Carbon::parse($request->string('end_date')->toString())->endOfDay()
+            : null;
+
+        if ($startDate && $endDate && $startDate->gt($endDate)) {
+            [$startDate, $endDate] = [$endDate->copy()->startOfDay(), $startDate->copy()->endOfDay()];
+        }
+
+        $loans = Loan::query()
+            ->with(['book', 'member'])
+            ->when($startDate, fn ($query) => $query->where('loan_date', '>=', $startDate))
+            ->when($endDate, fn ($query) => $query->where('loan_date', '<=', $endDate))
+            ->latest('loan_date')
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('reports.index', [
+            'loans' => $loans,
+            'startDate' => $startDate?->toDateString(),
+            'endDate' => $endDate?->toDateString(),
+        ]);
     }
 
     private function normalizePeriod(string $period): string

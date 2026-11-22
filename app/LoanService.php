@@ -30,6 +30,7 @@ class LoanService
                 throw ValidationException::withMessages(['book_id' => 'Buku tidak tersedia.']);
             }
             $lockedBook->decrement('stock');
+
             return Loan::create(['book_id' => $lockedBook->id, 'member_id' => $member->id, 'user_id' => $userId, 'loan_date' => now(), 'due_date' => now()->addDays(config('library.loan_days')), 'status' => LoanStatus::Dipinjam]);
         });
     }
@@ -53,6 +54,20 @@ class LoanService
 
     public function markOverdue(): int
     {
-        return Loan::whereNull('returned_at')->where('due_date', '<', now()->toDateString())->update(['status' => LoanStatus::Terlambat]);
+        $overdueLoans = Loan::query()
+            ->whereNull('returned_at')
+            ->where('due_date', '<', now()->startOfDay())
+            ->get();
+
+        foreach ($overdueLoans as $loan) {
+            $daysLate = max(1, $loan->due_date->diffInDays(now()->startOfDay()));
+            $loan->update(['status' => LoanStatus::Terlambat]);
+            Fine::updateOrCreate(
+                ['loan_id' => $loan->id],
+                ['days_late' => $daysLate, 'amount' => $daysLate * config('library.fine_per_day'), 'status' => 'belum_dibayar', 'paid_at' => null],
+            );
+        }
+
+        return $overdueLoans->count();
     }
 }

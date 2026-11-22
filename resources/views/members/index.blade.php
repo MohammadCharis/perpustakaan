@@ -10,6 +10,8 @@
                     <tr>
                         <th>Kode</th>
                         <th>Nama</th>
+                        <th>Email</th>
+                        <th>Bergabung</th>
                         <th>Status</th>
                         <th>Peminjaman</th>
                         <th class="text-right">Aksi</th>
@@ -20,6 +22,8 @@
                         <tr>
                             <td class="font-medium text-ink">{{ $member->member_code }}</td>
                             <td>{{ $member->name }}</td>
+                            <td>{{ $member->email ?? '-' }}</td>
+                            <td>{{ $member->joined_at?->translatedFormat('d M Y') ?? '-' }}</td>
                             <td>
                                 <x-badge :variant="$member->is_active ? 'success' : 'default'">{{ $member->is_active ? 'Aktif' : 'Nonaktif' }}</x-badge>
                             </td>
@@ -39,7 +43,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-10 text-center text-muted">Belum ada anggota.</td>
+                            <td colspan="7" class="py-10 text-center text-muted">Belum ada anggota.</td>
                         </tr>
                     @endforelse
                 </tbody>

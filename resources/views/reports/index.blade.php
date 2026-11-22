@@ -1,63 +1,70 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800">Laporan Peminjaman</h2>
-            <button type="button" onclick="window.print()" class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white print:hidden">Cetak</button>
-        </div>
-    </x-slot>
+    <x-page-header title="Laporan Peminjaman" description="Laporan riwayat peminjaman berdasarkan periode.">
+        <button type="button" onclick="window.print()" class="btn-secondary print:hidden">Cetak</button>
+    </x-page-header>
 
-    <div class="mx-auto max-w-7xl px-4 py-8">
-        <form method="GET" class="mb-6 grid gap-4 rounded-lg bg-white p-6 shadow sm:grid-cols-3 print:hidden">
+    <section class="card mb-6 p-5 print:hidden">
+        <form method="GET" action="{{ route('reports.index') }}" class="grid gap-4 sm:grid-cols-3">
             <div>
-                <label for="start_date" class="mb-1 block text-sm font-medium text-gray-700">Tanggal awal</label>
-                <input id="start_date" name="start_date" type="date" value="{{ request('start_date') }}" class="w-full rounded-md border-gray-300">
+                <label for="start_date" class="mb-1 block text-sm font-medium text-ink">Tanggal awal</label>
+                <input id="start_date" name="start_date" type="date" value="{{ $startDate }}" class="input">
             </div>
             <div>
-                <label for="end_date" class="mb-1 block text-sm font-medium text-gray-700">Tanggal akhir</label>
-                <input id="end_date" name="end_date" type="date" value="{{ request('end_date') }}" class="w-full rounded-md border-gray-300">
+                <label for="end_date" class="mb-1 block text-sm font-medium text-ink">Tanggal akhir</label>
+                <input id="end_date" name="end_date" type="date" value="{{ $endDate }}" class="input">
             </div>
             <div class="flex items-end gap-2">
-                <button class="rounded bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Tampilkan</button>
-                <a href="{{ route('reports.index') }}" class="rounded border px-4 py-2 text-sm">Reset</a>
+                <button type="submit" class="btn-primary">Tampilkan</button>
+                <a href="{{ route('reports.index') }}" class="btn-secondary">Reset</a>
             </div>
         </form>
+    </section>
 
-        <div class="overflow-x-auto rounded-lg bg-white p-6 shadow">
-            <table class="w-full text-left text-sm">
+    <div class="table-wrap">
+        <div class="overflow-x-auto">
+            <table class="w-full">
                 <thead>
-                    <tr class="border-b text-gray-600">
-                        <th class="px-3 py-3">Tanggal</th>
-                        <th class="px-3 py-3">Anggota</th>
-                        <th class="px-3 py-3">Buku</th>
-                        <th class="px-3 py-3">Jatuh tempo</th>
-                        <th class="px-3 py-3">Dikembalikan</th>
-                        <th class="px-3 py-3">Status</th>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Anggota</th>
+                        <th>Buku</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Dikembalikan</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($loans as $loan)
-                        <tr class="border-b">
-                            <td class="px-3 py-3">{{ $loan->loan_date->translatedFormat('d F Y') }}</td>
-                            <td class="px-3 py-3">{{ $loan->member->name }}</td>
-                            <td class="px-3 py-3">{{ $loan->book->title }}</td>
-                            <td class="px-3 py-3">{{ $loan->due_date->translatedFormat('d F Y') }}</td>
-                            <td class="px-3 py-3">{{ $loan->returned_at?->translatedFormat('d F Y') ?? '-' }}</td>
-                            <td class="px-3 py-3">{{ $loan->status->label() }}</td>
+                        <tr>
+                            <td>{{ $loan->loan_date?->translatedFormat('d F Y') ?? '-' }}</td>
+                            <td>{{ $loan->member?->name ?? '-' }}</td>
+                            <td class="font-medium text-ink">{{ $loan->book?->title ?? '-' }}</td>
+                            <td>{{ $loan->due_date?->translatedFormat('d F Y') ?? '-' }}</td>
+                            <td>{{ $loan->returned_at?->translatedFormat('d F Y') ?? '-' }}</td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <x-status-dot :status="$loan->status->value" />
+                                    <span>{{ $loan->status->label() }}</span>
+                                </div>
+                            </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="px-3 py-8 text-center text-gray-500">Belum ada data peminjaman.</td></tr>
+                        <tr>
+                            <td colspan="6" class="py-10 text-center text-muted">Belum ada data peminjaman.</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
-            <div class="mt-4">{{ $loans->withQueryString()->links() }}</div>
         </div>
     </div>
 
+    <div class="mt-4 print:hidden">{{ $loans->links() }}</div>
+
     <style>
         @media print {
-            nav, header, form, button { display: none !important; }
+            nav, header, .print\:hidden { display: none !important; }
             body { background: white; }
-            .shadow { box-shadow: none !important; }
+            .card, .table-wrap { box-shadow: none !important; border: 1px solid #ddd !important; }
         }
     </style>
 </x-app-layout>

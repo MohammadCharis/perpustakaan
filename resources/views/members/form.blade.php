@@ -8,10 +8,10 @@
                 @method('PUT')
             @endisset
 
-            @foreach ([['member_code', 'Kode anggota'], ['name', 'Nama'], ['email', 'Email'], ['phone', 'Telepon'], ['joined_at', 'Tanggal bergabung']] as [$field, $label])
+            @foreach ([['member_code', 'Kode anggota', 'text'], ['name', 'Nama', 'text'], ['email', 'Email', 'email'], ['phone', 'Telepon', 'text'], ['joined_at', 'Tanggal bergabung', 'date']] as [$field, $label, $type])
                 <div>
                     <label for="{{ $field }}" class="mb-1 block text-sm font-medium text-ink">{{ $label }}</label>
-                    <input id="{{ $field }}" name="{{ $field }}" value="{{ old($field, $member->$field ?? '') }}" class="input" placeholder="{{ $label }}">
+                    <input id="{{ $field }}" name="{{ $field }}" type="{{ $type }}" value="{{ old($field, isset($member?->$field) ? (string) $member->$field : '') }}" class="input" placeholder="{{ $label }}">
                     <x-input-error :messages="$errors->get($field)" class="mt-1" />
                 </div>
             @endforeach
