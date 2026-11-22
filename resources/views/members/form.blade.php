@@ -1,1 +1,36 @@
-<x-app-layout><x-slot name="header"><h2 class="font-semibold text-xl">{{ isset($member) ? 'Ubah anggota' : 'Tambah anggota' }}</h2></x-slot><div class="py-8 max-w-xl mx-auto px-4"><form class="bg-white shadow rounded p-6 space-y-4" method="POST" action="{{ isset($member) ? route('members.update', $member) : route('members.store') }}">@csrf @isset($member) @method('PUT') @endisset @foreach([['member_code','Kode anggota'],['name','Nama'],['email','Email'],['phone','Telepon'],['joined_at','Tanggal bergabung']] as [$field,$label])<input class="w-full rounded border-gray-300" name="{{ $field }}" placeholder="{{ $label }}" value="{{ old($field, $member->$field ?? '') }}">@endforeach<textarea class="w-full rounded border-gray-300" name="address" placeholder="Alamat">{{ old('address', $member->address ?? '') }}</textarea><label><input type="checkbox" name="active" value="1" @checked(old('active', $member->active ?? true))> Aktif</label><button class="bg-indigo-600 text-white px-4 py-2 rounded">Simpan</button></form></div></x-app-layout>
+<x-app-layout>
+    <x-page-header title="{{ isset($member) ? 'Ubah Anggota' : 'Tambah Anggota' }}" description="Lengkapi data anggota." />
+
+    <section class="card max-w-xl p-6">
+        <form method="POST" action="{{ isset($member) ? route('members.update', $member) : route('members.store') }}" class="space-y-5">
+            @csrf
+            @isset($member)
+                @method('PUT')
+            @endisset
+
+            @foreach ([['member_code', 'Kode anggota'], ['name', 'Nama'], ['email', 'Email'], ['phone', 'Telepon'], ['joined_at', 'Tanggal bergabung']] as [$field, $label])
+                <div>
+                    <label for="{{ $field }}" class="mb-1 block text-sm font-medium text-ink">{{ $label }}</label>
+                    <input id="{{ $field }}" name="{{ $field }}" value="{{ old($field, $member->$field ?? '') }}" class="input" placeholder="{{ $label }}">
+                    <x-input-error :messages="$errors->get($field)" class="mt-1" />
+                </div>
+            @endforeach
+
+            <div>
+                <label for="address" class="mb-1 block text-sm font-medium text-ink">Alamat</label>
+                <textarea id="address" name="address" class="input" rows="3" placeholder="Alamat">{{ old('address', $member->address ?? '') }}</textarea>
+                <x-input-error :messages="$errors->get('address')" class="mt-1" />
+            </div>
+
+            <label class="flex items-center gap-2 text-sm text-ink">
+                <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $member->is_active ?? true)) class="rounded border-line text-brand focus:ring-brand">
+                Aktif
+            </label>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-primary">{{ isset($member) ? 'Simpan Perubahan' : 'Simpan' }}</button>
+                <a href="{{ route('members.index') }}" class="btn-secondary">Batal</a>
+            </div>
+        </form>
+    </section>
+</x-app-layout>

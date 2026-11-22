@@ -1,1 +1,36 @@
-<x-app-layout><x-slot name="header"><h2 class="font-semibold text-xl">Peminjaman baru</h2></x-slot><div class="py-8 max-w-xl mx-auto px-4"><form class="bg-white shadow rounded p-6 space-y-4" method="POST" action="{{ route('loans.store') }}">@csrf<select class="w-full rounded border-gray-300" name="book_id"><option value="">Pilih buku</option>@foreach($books as $book)<option value="{{ $book->id }}">{{ $book->title }} (stok {{ $book->stock }})</option>@endforeach</select><select class="w-full rounded border-gray-300" name="member_id"><option value="">Pilih anggota</option>@foreach($members as $member)<option value="{{ $member->id }}">{{ $member->name }} ({{ $member->member_code }})</option>@endforeach</select><button class="bg-indigo-600 text-white px-4 py-2 rounded">Simpan peminjaman</button></form></div></x-app-layout>
+<x-app-layout>
+    <x-page-header title="Peminjaman Baru" description="Catat peminjaman buku baru." />
+
+    <section class="card max-w-xl p-6">
+        <form method="POST" action="{{ route('loans.store') }}" class="space-y-5">
+            @csrf
+
+            <div>
+                <label for="book_id" class="mb-1 block text-sm font-medium text-ink">Buku</label>
+                <select id="book_id" name="book_id" class="input">
+                    <option value="">Pilih buku</option>
+                    @foreach ($books as $book)
+                        <option value="{{ $book->id }}" @selected(old('book_id') == $book->id)>{{ $book->title }} (stok {{ $book->stock }})</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('book_id')" class="mt-1" />
+            </div>
+
+            <div>
+                <label for="member_id" class="mb-1 block text-sm font-medium text-ink">Anggota</label>
+                <select id="member_id" name="member_id" class="input">
+                    <option value="">Pilih anggota</option>
+                    @foreach ($members as $member)
+                        <option value="{{ $member->id }}" @selected(old('member_id') == $member->id)>{{ $member->name }} ({{ $member->member_code }})</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('member_id')" class="mt-1" />
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button type="submit" class="btn-primary">Simpan Peminjaman</button>
+                <a href="{{ route('loans.index') }}" class="btn-secondary">Batal</a>
+            </div>
+        </form>
+    </section>
+</x-app-layout>

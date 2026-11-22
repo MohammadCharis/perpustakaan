@@ -1,1 +1,51 @@
-<x-app-layout><x-slot name="header"><div class="flex justify-between"><h2 class="font-semibold text-xl">Anggota</h2><a href="{{ route('members.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded">Tambah anggota</a></div></x-slot><div class="py-8 max-w-6xl mx-auto px-4"><div class="bg-white shadow rounded p-6"><table class="w-full"><tr class="text-left"><th class="p-3">Kode</th><th class="p-3">Nama</th><th class="p-3">Status</th><th class="p-3">Peminjaman</th><th></th></tr>@foreach($members as $member)<tr class="border-t"><td class="p-3">{{ $member->member_code }}</td><td class="p-3">{{ $member->name }}</td><td class="p-3">{{ $member->active ? 'Aktif' : 'Nonaktif' }}</td><td class="p-3">{{ $member->loans_count }}</td><td class="p-3 text-right"><a class="text-indigo-600" href="{{ route('members.edit', $member) }}">Ubah</a> <form class="inline" method="POST" action="{{ route('members.destroy', $member) }}">@csrf @method('DELETE')<button class="text-red-600">Hapus</button></form></td></tr>@endforeach</table>{{ $members->links() }}</div></div></x-app-layout>
+<x-app-layout>
+    <x-page-header title="Anggota" description="Daftar anggota perpustakaan.">
+        <a href="{{ route('members.create') }}" class="btn-primary">+ Tambah Anggota</a>
+    </x-page-header>
+
+    <div class="table-wrap">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th>Kode</th>
+                        <th>Nama</th>
+                        <th>Status</th>
+                        <th>Peminjaman</th>
+                        <th class="text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($members as $member)
+                        <tr>
+                            <td class="font-medium text-ink">{{ $member->member_code }}</td>
+                            <td>{{ $member->name }}</td>
+                            <td>
+                                <x-badge :variant="$member->is_active ? 'success' : 'default'">{{ $member->is_active ? 'Aktif' : 'Nonaktif' }}</x-badge>
+                            </td>
+                            <td>{{ $member->loans_count }}</td>
+                            <td class="text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a href="{{ route('members.edit', $member) }}" class="btn-secondary">Ubah</a>
+                                    @if (auth()->user()->isAdmin())
+                                        <form method="POST" action="{{ route('members.destroy', $member) }}" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-secondary text-status-danger">Hapus</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="py-10 text-center text-muted">Belum ada anggota.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-4">{{ $members->links() }}</div>
+</x-app-layout>

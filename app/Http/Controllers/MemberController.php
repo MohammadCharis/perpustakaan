@@ -21,7 +21,10 @@ class MemberController extends Controller
 
     public function store(StoreMemberRequest $request): RedirectResponse
     {
-        Member::create($request->validated());
+        $data = $request->validated();
+        $data['is_active'] = $request->boolean('is_active');
+
+        Member::create($data);
 
         return to_route('members.index')->with('success', 'Anggota berhasil ditambahkan.');
     }
@@ -33,7 +36,10 @@ class MemberController extends Controller
 
     public function update(StoreMemberRequest $request, Member $member): RedirectResponse
     {
-        $member->update($request->validated());
+        $data = $request->validated();
+        $data['is_active'] = $request->boolean('is_active');
+
+        $member->update($data);
 
         return to_route('members.index')->with('success', 'Anggota berhasil diperbarui.');
     }

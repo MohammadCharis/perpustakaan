@@ -9,6 +9,6 @@ class FineFactory extends Factory
 {
     public function definition(): array
     {
-        return ['loan_id' => Loan::factory(), 'amount' => fake()->numberBetween(1000, 50000), 'status' => 'unpaid'];
+        return ['loan_id' => Loan::factory(), 'days_late' => fake()->numberBetween(1, 10), 'amount' => fake()->numberBetween(1000, 50000), 'status' => 'belum_dibayar'];
     }
 }

@@ -8,23 +8,43 @@
 
 @layer base {
     :root { color-scheme: light; }
-    html { background: #2563eb; }
-    body { @apply bg-blue-600 text-slate-900 antialiased; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
-    button, a, input, select, textarea { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2; }
+    html, body { height: 100%; }
+    html { background: #dfe3ea; }
+    body { @apply bg-[#dfe3ea] text-ink antialiased; font-family: Inter, ui-sans-serif, system-ui, sans-serif; overflow: hidden; }
+    button, a, input, select, textarea { @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2; }
 }
 
 @layer components {
-    .app-frame { @apply min-h-screen bg-white lg:my-5 lg:ml-5 lg:min-h-[calc(100vh-2.5rem)] lg:rounded-[2rem] lg:shadow-2xl lg:ring-1 lg:ring-blue-400/30; }
-    .card { @apply rounded-2xl border border-slate-200 bg-white shadow-sm; }
-    .input { @apply w-full rounded-xl border-slate-200 bg-white text-sm shadow-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-blue-500; }
-    .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700; }
-    .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50; }
-    .sidebar-link { @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-blue-100 transition hover:bg-white/10 hover:text-white; }
-    .sidebar-link.active { @apply bg-white text-blue-700 shadow-sm hover:bg-white hover:text-blue-700; }
-    .table-wrap { @apply overflow-hidden rounded-2xl border border-slate-200 bg-white; }
-    .table-wrap th { @apply bg-slate-50 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500; }
-    .table-wrap td { @apply border-t border-slate-100 px-5 py-4 text-sm; }
+    .app-frame { @apply relative flex h-full min-h-0 w-full overflow-hidden bg-gray-100; }
+    .card { @apply rounded-2xl border border-line bg-surface shadow-sm; }
+    .input { @apply w-full rounded-xl border-line bg-surface text-sm shadow-sm placeholder:text-muted focus:border-brand focus:ring-brand; }
+    .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-dark; }
+    .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-canvas; }
+    .login-underline-input { @apply w-full border-0 border-b border-login-line bg-transparent px-0 py-3 text-sm text-login-title placeholder:text-login-muted outline-none ring-0 transition-colors focus:border-login-blue focus:outline-none focus:ring-0; margin-left: 0 !important; }
+    .login-underline-input,
+    .login-underline-input:hover,
+    .login-underline-input:focus,
+    .login-underline-input:focus-visible,
+    .login-underline-input:active { border-top: 0 !important; border-right: 0 !important; border-left: 0 !important; outline: 0 !important; box-shadow: none !important; --tw-ring-offset-shadow: 0 0 #0000 !important; --tw-ring-shadow: 0 0 #0000 !important; }
+    .login-underline-input:focus,
+    .login-underline-input:focus-visible { border-bottom: 2px solid theme('colors.login-blue') !important; }
+    .login-underline-input:-webkit-autofill,
+    .login-underline-input:-webkit-autofill:hover,
+    .login-underline-input:-webkit-autofill:focus { -webkit-text-fill-color: #5A5A5A; -webkit-box-shadow: 0 0 0 1000px #FBFBFC inset !important; box-shadow: 0 0 0 1000px #FBFBFC inset !important; transition: background-color 9999s ease-in-out 0s; }
+    .sidebar-link { @apply flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-ink transition hover:bg-canvas; }
+    .sidebar-link.active { @apply rounded-xl bg-black text-white shadow-sm hover:bg-black hover:text-white; }
+    .table-wrap { @apply overflow-hidden rounded-2xl border border-line bg-surface; }
+    .table-wrap th { @apply bg-canvas px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-muted; }
+    .table-wrap td { @apply border-t border-line px-5 py-4 text-sm; }
 }
+
+@media print {
+    body, html { background: white !important; }
+    aside, header, .no-print { display: none !important; }
+    .app-frame { margin: 0 !important; box-shadow: none !important; }
+    main { padding: 0 !important; }
+}
+[x-cloak] { display: none !important; }
 
 @media print {
     body, html { background: white !important; }
